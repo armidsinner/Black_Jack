@@ -1,8 +1,4 @@
-require_relative 'card'
-class Deck
-  SUITS = ['♠', '♣', '♥', '♦']
-  RANKS = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace']
-  VALUES = [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11]
+class Deck < Card
   attr_accessor :cards
   def initialize
     @cards = []
@@ -20,5 +16,10 @@ class Deck
         @cards.append(Card.new(suit, rank, VALUES[index]))
       end
     end
+  end
+
+  def give_a_card
+    new_card = @cards.sample
+    @own_cards.append(new_card)
   end
 end
