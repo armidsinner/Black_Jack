@@ -12,21 +12,13 @@ class Interface
     self.player.hand.points = 0
     self.player.bank -= 10
     self.game_bank = 20
-    for i in 0..1 
-      give_a_card(player)
+    2.times do 
+      player.hand.take_a_card(self.deck.give_a_card)
     end
     player.hand.points
-    for i in 0..1 
-      give_a_card(dealer)
+    2.times do 
+      dealer.hand.take_a_card(self.deck.give_a_card)
     end
-  end
-
-  def give_a_card(user)
-    needed_card = self.deck.cards.sample
-    needed_card.value = 1 if  needed_card.rank == 'Ace' && user.hand.points > 10
-    user.hand.own_cards.append(needed_card)
-    user.hand.points += needed_card.value
-    self.deck.cards.delete(needed_card)
   end
 
   def open_cards
@@ -38,7 +30,10 @@ class Interface
     dealer.hand.own_cards.each { |card| print card.rank.to_s + card.suit.to_s + ' ' }
     puts
     puts 'Очки диллера: ' + dealer.hand.points.to_s
-    puts 'Сумма очков дилера равна ' + dealer.hand.points.to_s
+    winner
+  end
+
+  def winner
     if player.hand.points > dealer.hand.points && player.hand.points < 22  || dealer.hand.points > 21
       puts 'Победил игрок'
       player.bank += self.game_bank
@@ -53,7 +48,7 @@ class Interface
 
   def dealers_turn
     if dealer.hand.points < 17 && dealer.hand.own_cards.length != 3
-      give_a_card(dealer)
+      dealer.hand.take_a_card(self.deck.give_a_card)
       puts 'Дилер берет карту'
     else
       puts 'Дилер пропускает ход'
@@ -65,32 +60,20 @@ class Interface
     name = gets.chomp
     self.player = User.new(name)
     while TRUE
-      if self.player.bank == 0
-        puts 'К сожалению, вы проиграли все ваши средства'
-        break
-      end
-      start_game
-      print 'Ваши карты: '
-      player.hand.own_cards.each { |card| print card.rank.to_s + card.suit.to_s + ' ' }
-      puts
-      puts 'Ваши очки: ' + player.hand.points. to_s
-      puts 'Ваш ход. Выберите действие
-      1) Добавить карту
-      2) Пропустить ход
-      3) Открыть карты'
+      check_bank_start
       a = gets.chomp
       case a
       when '1'
-        first_turn
+        accept_card
       when '2'
         dealers_turn
         puts 'Ваш ход. Выберите действие
         1) Добавить карту
         2) Открыть карты'
         a = gets.chomp
-        case a 
+        case a
         when '1'
-          first_turn
+          accept_card
         when '2'
           open_cards
           play_one_more
@@ -102,8 +85,24 @@ class Interface
     end
   end
 
-  def first_turn
-    give_a_card(player)
+  def check_bank_start
+    if self.player.bank == 0
+      puts 'К сожалению, вы проиграли все ваши средства'
+      abort
+    end
+    start_game
+    print 'Ваши карты: '
+    player.hand.own_cards.each { |card| print card.rank.to_s + card.suit.to_s + ' ' }
+    puts
+    puts 'Ваши очки: ' + player.hand.points. to_s
+    puts 'Ваш ход. Выберите действие
+    1) Добавить карту
+    2) Пропустить ход
+    3) Открыть карты'
+  end
+
+  def accept_card
+    player.hand.take_a_card(self.deck.give_a_card)
     print 'Получена карта ' + player.hand.own_cards[-1].rank.to_s + player.hand.own_cards[-1].suit.to_s
     puts
     puts 'Ваши очки: ' + player.hand.points.to_s

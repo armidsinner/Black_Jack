@@ -5,13 +5,9 @@ class Hand
     @points = 0
   end
 
-  def show_cards
-    self.own_cards.each { |card| print card.rank.to_s + card.suit.to_s + ' ' }
-  end
-
-  def count_points 
-    self.own_cards.each do |card|
-      self.points += card.value
-    end
+  def take_a_card(needed_card)
+    self.own_cards.append(needed_card)
+    needed_card.value = 1 if  needed_card.rank == 'Ace' && self.points > 10
+    self.points += needed_card.value
   end
 end

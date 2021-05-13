@@ -1,4 +1,4 @@
-class Deck < Card
+class Deck
   attr_accessor :cards
   def initialize
     @cards = []
@@ -11,15 +11,16 @@ class Deck < Card
   end 
 
   def create_deck 
-    SUITS.each do |suit|
-      RANKS.each_with_index do |rank, index|
-        @cards.append(Card.new(suit, rank, VALUES[index]))
+    Card::SUITS.each do |suit|
+      Card::RANKS.each_with_index do |rank, index|
+        @cards.append(Card.new(suit, rank, Card::VALUES[index]))
       end
     end
   end
 
   def give_a_card
-    new_card = @cards.sample
-    @own_cards.append(new_card)
+    needed_card = self.cards.sample
+    self.cards.delete(needed_card)
   end
+
 end
