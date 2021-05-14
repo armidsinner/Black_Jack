@@ -1,8 +1,12 @@
+# frozen_string_literal: true
+
 require_relative 'card'
 require_relative 'hand'
-class User 
+# Class for user
+class User
   attr_reader :name, :hand
   attr_accessor :bank
+
   def initialize(name)
     @name = name
     @bank = 100

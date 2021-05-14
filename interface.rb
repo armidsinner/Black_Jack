@@ -1,54 +1,61 @@
+# frozen_string_literal: true
+
 require_relative 'card'
 require_relative 'deck'
 require_relative 'user'
 require_relative 'dealer'
 
+# Class for intarface
 class Interface
   attr_accessor :bank, :own_cards, :points, :cards, :game_bank, :deck, :dealer, :player
+
   def start_game
-    self.deck = Deck.new 
+    self.deck = Deck.new
     self.dealer = Dealer.new
-    self.player.hand.own_cards = []
-    self.player.hand.points = 0
-    self.player.bank -= 10
+    player.hand.own_cards = []
+    player.hand.points = 0
+    player.bank -= 10
     self.game_bank = 20
-    2.times do 
-      player.hand.take_a_card(self.deck.give_a_card)
+    2.times do
+      player.hand.take_a_card(deck.give_a_card)
     end
     player.hand.points
-    2.times do 
-      dealer.hand.take_a_card(self.deck.give_a_card)
+    2.times do
+      dealer.hand.take_a_card(deck.give_a_card)
     end
   end
 
   def open_cards
     print 'Карты игрока: '
-    player.hand.own_cards.each { |card| print card.rank.to_s + card.suit.to_s + ' ' }
+    player.hand.own_cards.each { |card| print "#{card.rank}#{card.suit} " }
     puts
-    puts 'Ваши очки: ' + player.hand.points.to_s
+    puts "Ваши очки: #{player.hand.points}"
     print 'Карты дилера: '
-    dealer.hand.own_cards.each { |card| print card.rank.to_s + card.suit.to_s + ' ' }
+    dealer.hand.own_cards.each { |card| print "#{card.rank}#{card.suit} " }
     puts
-    puts 'Очки диллера: ' + dealer.hand.points.to_s
+    puts "Очки диллера: #{dealer.hand.points}"
     winner
   end
 
   def winner
-    if player.hand.points > dealer.hand.points && player.hand.points < 22  || dealer.hand.points > 21
+    if player.hand.points > dealer.hand.points &&
+       player.hand.points < 22 || dealer.hand.points > 21
       puts 'Победил игрок'
-      player.bank += self.game_bank
-    elsif player.hand.points < dealer.hand.points && dealer.hand.points < 22 || player.hand.points > 21
+      player.bank += game_bank
+    elsif player.hand.points < dealer.hand.points &&
+          dealer.hand.points < 22 || player.hand.points > 21
       puts 'Победил дилер'
-    elsif player.hand.points == dealer.hand.points || player.hand.points == 21 && dealer.hand.points == 21
+    elsif player.hand.points == dealer.hand.points ||
+          player.hand.points == 21 && dealer.hand.points == 21
       puts 'Ничья'
-      player.bank += self.game_bank / 2
-      dealer.bank += self.game_bank / 2
+      player.bank += game_bank / 2
+      dealer.bank += game_bank / 2
     end
   end
 
   def dealers_turn
     if dealer.hand.points < 17 && dealer.hand.own_cards.length != 3
-      dealer.hand.take_a_card(self.deck.give_a_card)
+      dealer.hand.take_a_card(deck.give_a_card)
       puts 'Дилер берет карту'
     else
       puts 'Дилер пропускает ход'
@@ -86,15 +93,15 @@ class Interface
   end
 
   def check_bank_start
-    if self.player.bank == 0
+    if player.bank.zero?
       puts 'К сожалению, вы проиграли все ваши средства'
       abort
     end
     start_game
     print 'Ваши карты: '
-    player.hand.own_cards.each { |card| print card.rank.to_s + card.suit.to_s + ' ' }
+    player.hand.own_cards.each { |card| print "#{card.rank}#{card.suit} " }
     puts
-    puts 'Ваши очки: ' + player.hand.points. to_s
+    puts "Ваши очки: #{player.hand.points}"
     puts 'Ваш ход. Выберите действие
     1) Добавить карту
     2) Пропустить ход
@@ -102,10 +109,10 @@ class Interface
   end
 
   def accept_card
-    player.hand.take_a_card(self.deck.give_a_card)
-    print 'Получена карта ' + player.hand.own_cards[-1].rank.to_s + player.hand.own_cards[-1].suit.to_s
+    player.hand.take_a_card(deck.give_a_card)
+    print "Получена карта #{player.hand.own_cards[-1].rank}#{player.hand.own_cards[-1].suit}"
     puts
-    puts 'Ваши очки: ' + player.hand.points.to_s
+    puts "Ваши очки: #{player.hand.points}"
     dealers_turn
     open_cards
     play_one_more
@@ -116,7 +123,7 @@ class Interface
     a = gets.chomp.strip
     case a
     when 'Да'
-      puts 'Сумма на вашем счету:' + player.bank.to_s
+      puts "Сумма на вашем счету:#{player.bank}"
     when 'Нет'
       abort
     end
