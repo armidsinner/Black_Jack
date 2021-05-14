@@ -1,3 +1,4 @@
+# Class for deck
 class Deck
   attr_accessor :cards
   def initialize
@@ -8,9 +9,9 @@ class Deck
 
   def shuffle_cards
     @cards.shuffle!
-  end 
+  end
 
-  def create_deck 
+  def create_deck
     Card::SUITS.each do |suit|
       Card::RANKS.each_with_index do |rank, index|
         @cards.append(Card.new(suit, rank, Card::VALUES[index]))
@@ -19,8 +20,7 @@ class Deck
   end
 
   def give_a_card
-    needed_card = self.cards.sample
-    self.cards.delete(needed_card)
+    needed_card = cards.sample
+    cards.delete(needed_card)
   end
-
 end
